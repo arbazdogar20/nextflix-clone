@@ -1,3 +1,4 @@
+/* ⬇️ Existing Styles - Unchanged */
 .banner {
   color: white;
   object-fit: contain;
@@ -31,10 +32,8 @@
 .banner_button:hover {
   color: black;
   line-height: 1.3;
-  /* padding-top: 1rem; */
   font-size: 0.8rem;
   max-width: 360px;
-  /* height: 80px; */
 }
 
 .fade {
@@ -50,4 +49,48 @@
 .banner_release_date {
   font-size: 14px;
   margin-top: 10px;
+}
+
+/* ✅ New Skeleton Styles */
+.banner_skeleton {
+  height: 440px;
+  background-color: #1c1c1c;
+  padding: 140px 30px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.skeleton-title {
+  width: 40%;
+  height: 40px;
+}
+
+.skeleton-button {
+  width: 100px;
+  height: 40px;
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.skeleton-desc {
+  width: 80%;
+  height: 80px;
+  margin-top: 10px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

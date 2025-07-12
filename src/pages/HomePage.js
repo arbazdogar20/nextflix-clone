@@ -25,7 +25,7 @@ const HomePage = () => {
       style={{ backgroundColor: "#111", overflow: "hidden" }}
     >
       <Navbar />
-      <Banner />
+      <Banner loading={isLoading} />
 
       {Object.keys(movies).map((title) => (
         <Row

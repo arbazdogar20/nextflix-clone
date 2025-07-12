@@ -14,15 +14,19 @@ const opts = {
   },
 };
 
-const Banner = ({selectedMovie}) => {
+const Banner = ({ selectedMovie, loading }) => {
   const { user } = useAppStateContext();
 
-  const [movie, setMovie] = useState(selectedMovie ? selectedMovie : {
-    title: "",
-    release_date: "",
-    backdrop_poster: "",
-    overview: "",
-  });
+  const [movie, setMovie] = useState(
+    selectedMovie
+      ? selectedMovie
+      : {
+          title: "",
+          release_date: "",
+          backdrop_poster: "",
+          overview: "",
+        }
+  );
   const [trailerUrl, setTrailerUrl] = useState("");
 
   useEffect(() => {
@@ -46,7 +50,7 @@ const Banner = ({selectedMovie}) => {
       }
     };
 
-    if(!selectedMovie){
+    if (!selectedMovie) {
       fetchData();
     }
   }, [selectedMovie, user?.token]);
@@ -63,46 +67,55 @@ const Banner = ({selectedMovie}) => {
     if (trailerUrl) {
       setTrailerUrl("");
     } else {
-      movieTrailer(movie.title || "").then((url) => {
-        const urlParams = new URLSearchParams(new URL(url).search);
-        setTrailerUrl(urlParams.get("v"))
-      }).catch((error) => console.log(error));
+      movieTrailer(movie.title || "")
+        .then((url) => {
+          const urlParams = new URLSearchParams(new URL(url).search);
+          setTrailerUrl(urlParams.get("v"));
+        })
+        .catch((error) => console.log(error));
     }
   };
 
   return (
     <div>
-      <header
-        className="banner"
-        style={{
-          backgroundImage: `url("${movie.backdrop_poster}")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center center",
-        }}
-      >
-        <div className="banner_contents">
-          <h1 className="banner_title">{movie.title}</h1>
-          <div className="banner_buttons">
-            <button
-              className="banner_button"
-              onClick={(event) => handlePlayClick(event)}
-            >
-              Play
-            </button>
-            <button className="banner_button">My List</button>
-            <span className="banner_release_date">
-              {movie.release_date
-                ? new Date(movie?.release_date).toISOString().split("T")[0]
-                : ""}
-            </span>
-            <p className="banner_description">
-              {truncate(movie.overview, 150)}
-            </p>
-          </div>
-          {/* <div className="fade"></div> */}
+      {loading ? (
+        <div className="banner_skeleton">
+          <div className="skeleton skeleton-image" />
+          <div className="skeleton skeleton-title" />
+          <div className="skeleton skeleton-button" />
+          <div className="skeleton skeleton-desc" />
         </div>
-      </header>
-      {trailerUrl && <YouTube videoId={trailerUrl} opts={opts}/>}
+      ) : (
+        <>
+          <header
+            className="banner"
+            style={{
+              backgroundImage: `url("${movie.backdrop_poster}")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center center",
+            }}
+          >
+            <div className="banner_contents">
+              <h1 className="banner_title">{movie.title}</h1>
+              <div className="banner_buttons">
+                <button className="banner_button" onClick={handlePlayClick}>
+                  Play
+                </button>
+                <button className="banner_button">My List</button>
+                <span className="banner_release_date">
+                  {movie.release_date
+                    ? new Date(movie?.release_date).toISOString().split("T")[0]
+                    : ""}
+                </span>
+                <p className="banner_description">
+                  {truncate(movie.overview, 150)}
+                </p>
+              </div>
+            </div>
+          </header>
+          {trailerUrl && <YouTube videoId={trailerUrl} opts={opts} />}
+        </>
+      )}
     </div>
   );
 };
