@@ -11,6 +11,7 @@ const initialState = {
     Documentaries: [],
     "Netflix Originals": [],
   },
+  isLoading: false,
   status: "idle",
   error: null,
 };
@@ -18,6 +19,7 @@ const initialState = {
 export const getMovies = createAsyncThunk("movies/fetchMovies", async () => {
   try {
     // return Promise.reject("Cannot get movies")
+
     const response = await movieApi.get(movieRequests.fetchAllMovies, {
       headers: {
         Authorization: `Bearer ${
@@ -28,7 +30,7 @@ export const getMovies = createAsyncThunk("movies/fetchMovies", async () => {
     // throw new Error('test')
     return response.data;
   } catch (error) {
-    return error.response.data.error
+    return error.response.data.error;
   }
 });
 
@@ -41,22 +43,23 @@ const movieSlice = createSlice({
   // add reducers for the sync on the UI
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getMovies.pending, (state, action) => {
-      state.status = "loading";
-    })
-    .addCase(getMovies.fulfilled, (state, action) => {
-      state.movies = action.payload.movies;
-      state.status = "success";
-    })
-    .addCase(getMovies.rejected, (state, action) => {
-      state.error = action.error.message;
-      state.status = "failed";
-    });
+    builder
+      .addCase(getMovies.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(getMovies.fulfilled, (state, action) => {
+        state.movies = action.payload.movies;
+        state.status = "success";
+      })
+      .addCase(getMovies.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.status = "failed";
+      });
   },
 });
 
-export default movieSlice.reducer
+export default movieSlice.reducer;
 
-export const selectAllMovies = (state) => state.movies.movies
-export const getMoviesStatus = (state) => state.movies.status
-export const getMoviesError = (state) => state.movies.error
+export const selectAllMovies = (state) => state.movies.movies;
+export const getMoviesStatus = (state) => state.movies.status;
+export const getMoviesError = (state) => state.movies.error;

@@ -12,7 +12,7 @@ const opts = {
   },
 };
 
-const Row = ({ movies, title, isLarge }) => {
+const Row = ({ movies, title, isLarge, isLoading }) => {
   const [movie, setMovie] = useState({});
   const [trailerUrl, setTrailerUrl] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -40,7 +40,7 @@ const Row = ({ movies, title, isLarge }) => {
 
   const handleViewClick = (event) => {
     event.preventDefault();
-    navigate(`/movie/${movie.movie_id}`, {state: {movie}});
+    navigate(`/movie/${movie.movie_id}`, { state: { movie } });
   };
 
   const handleMovieClick = (event, movie) => {
@@ -50,14 +50,24 @@ const Row = ({ movies, title, isLarge }) => {
     if (trailerUrl) {
       setTrailerUrl("");
     }
-    setShowModal(!showModal)
+    setShowModal(!showModal);
   };
 
   return (
     <div className="row">
       <h2>{title}</h2>
       <div className="row_posters">
-        {movies === undefined || movies.length === 0 ? (
+        {isLoading ? (
+          // Show 6 skeletons while loading
+          [...Array(6)].map((_, index) => (
+            <div
+              key={index}
+              className={`skeleton_poster ${
+                isLarge ? "skeleton_large" : "skeleton_small"
+              }`}
+            ></div>
+          ))
+        ) : movies === undefined || movies.length === 0 ? (
           <span>No Movies Found</span>
         ) : (
           movies.map((movie) => (
@@ -71,11 +81,22 @@ const Row = ({ movies, title, isLarge }) => {
           ))
         )}
       </div>
-      {trailerUrl && <YouTube videoId={trailerUrl} opts={opts}/>}
+
+      {trailerUrl && <YouTube videoId={trailerUrl} opts={opts} />}
       {showModal && (
         <div className="movie_options">
-            <button className="movie_button" onClick={(event) => handlePlayClick(event)}>Play</button>
-            <button className="movie_button" onClick={(event) => handleViewClick(event)}>View</button>
+          <button
+            className="movie_button"
+            onClick={(event) => handlePlayClick(event)}
+          >
+            Play
+          </button>
+          <button
+            className="movie_button"
+            onClick={(event) => handleViewClick(event)}
+          >
+            View
+          </button>
         </div>
       )}
     </div>

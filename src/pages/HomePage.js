@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
 import Banner from "../components/Banner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Row from "../components/Row";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,12 +13,11 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const status = useSelector(getMoviesStatus);
   const movies = useSelector(selectAllMovies);
+  const isLoading = status === "loading";
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(getMovies());
-    }
-  });
+    dispatch(getMovies());
+  }, []);
 
   return (
     <div
@@ -29,7 +28,12 @@ const HomePage = () => {
       <Banner />
 
       {Object.keys(movies).map((title) => (
-        <Row key={title} title={title} movies={movies[title]} />
+        <Row
+          key={title}
+          title={title}
+          movies={movies[title]}
+          isLoading={isLoading}
+        />
       ))}
     </div>
   );
